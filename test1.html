@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Student Balance</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        input, button { padding: 10px; margin: 5px; }
+        #result { margin-top: 20px; font-size: 1.2em; }
+        #qrCode { display: none; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Check Your Balance</h1>
+    <label for="studentId">Enter Student ID:</label>
+    <input type="number" id="studentId" placeholder="Student ID">
+    <button onclick="checkBalance()">Check Balance</button>
+    <button id="chargeButton" style="display:none;" onclick="showQRCode()">Charge</button>  <!-- Charge button -->
+    <div id="result"></div>
+    <div id="qrCode">
+        <h2>Charge QR Code</h2>
+        <img id="qrImage" src="" alt="QR Code" style="max-width: 200px; max-height: 200px;">
+    </div>
+
+    <script>
+        function checkBalance() {
+            const studentId = document.getElementById('studentId').value.trim();
+            const resultDiv = document.getElementById('result');
+            const chargeButton = document.getElementById('chargeButton');
+            const qrCodeDiv = document.getElementById('qrCode');
+
+            resultDiv.innerHTML = '';  // Clear previous result
+            qrCodeDiv.style.display = 'none';  // Hide QR code until Charge button is clicked
+
+            if (studentId) {
+                fetch(`http://10.50.66.1:8000/student/${studentId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Student not found');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data.id, data.name, data.balance);
+                        resultDiv.innerHTML = `ID: ${data.id}<br>Name: ${data.name}<br>Balance: ¥${data.balance.toFixed(2)}`;
+                        resultDiv.style.color = 'green';
+
+                        // Show the Charge button after retrieving balance
+                        chargeButton.style.display = 'inline';  
+                    })
+                    .catch(error => {
+                        resultDiv.innerHTML = error.message;  // Display error message
+                        resultDiv.style.color = 'red';
+                    });
+            } else {
+                resultDiv.innerHTML = 'Please enter a valid student ID';
+                resultDiv.style.color = 'red';
+            }
+        }
+
+        function showQRCode() {
+            const studentId = document.getElementById('studentId').value.trim();
+            const qrImage = document.getElementById('qrImage');
+
+            // Set the QR code source URL (ensure this matches your server's setup)
+            qrImage.src = `http://10.50.66.1:8000/Card_payment/STUCOQR.png`; // Adjust this URL as needed
+
+            // Show the QR code div
+            document.getElementById('qrCode').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
