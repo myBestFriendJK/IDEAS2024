@@ -34,7 +34,7 @@
             qrCodeDiv.style.display = 'none';  // Hide QR code until Charge button is clicked
 
             if (studentId) {
-                fetch(`http://10.50.66.1:8000/student/${studentId}`)
+                fetch(`http://192.168.110.224:8000/student/${studentId}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Student not found');
@@ -64,7 +64,7 @@
             const qrImage = document.getElementById('qrImage');
 
             // Set the QR code source URL (ensure this matches your server's setup)
-            qrImage.src = `http://10.50.66.1:8000/Card_payment/STUCOQR.png`; // Adjust this URL as needed
+            qrImage.src = `STUCOQR.png`; // Adjust this URL as needed
 
             // Show the QR code div
             document.getElementById('qrCode').style.display = 'block';
