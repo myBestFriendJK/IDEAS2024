@@ -34,7 +34,13 @@
             qrCodeDiv.style.display = 'none';  // Hide QR code until Charge button is clicked
 
             if (studentId) {
-                fetch(`https://10.50.66.1:8000/student/${studentId}`)
+                fetch(`https://10.50.66.1:8000/student/${studentId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    },
+                    mode: 'cors'
+                })
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Student not found');
